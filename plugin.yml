@@ -1,0 +1,17 @@
+name: VList
+version: 0.02
+main: the.vox.mc.themasteredpanda.vlist.vlist
+author: TheMasteredPanda
+depend: [Essentials]
+commands:
+  list:
+    aliases: [online, eonline, elist]
+    permission: vox.list.use
+    default: true
+permissions:
+  vox.list.staff:
+    default: false
+  vox.list.architect:
+    default: false
+  vox.list.donator:
+    default: false
