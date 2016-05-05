@@ -11,7 +11,5 @@ commands:
 permissions:
   vox.list.staff:
     default: false
-  vox.list.architect:
-    default: false
-  vox.list.donator:
+  vox.list.contributor:
     default: false
