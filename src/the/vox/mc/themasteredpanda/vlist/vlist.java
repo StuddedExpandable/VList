@@ -43,6 +43,7 @@ public class vlist extends JavaPlugin implements Listener{
 	
 	public void onEnable() {
 		createConfig();
+		setupChat();
 		ess = (IEssentials)getServer().getPluginManager().getPlugin("Essentials");
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
 		Bukkit.getLogger().info("[VList] is now enabled!");
