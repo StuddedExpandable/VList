@@ -63,14 +63,13 @@ public class vlist extends JavaPlugin implements Listener{
 			defaultlist.add(" ");
 			defaultlist.add("&7There is currently {onlineplayers} player(s) online");
 			defaultlist.add("&6Staff Members &8{>>} &e{staff}");
-			defaultlist.add("&6Architects &8{>>} &e{architects}");
-			defaultlist.add("&6Donators &8{>>} &e{donators}");
+			defaultlist.add("&6Contributors &8{>>} &e{contributors}");
 			defaultlist.add(" ");
 			defaultlist.add("&8&m--------------------------------------------");
 			config.set("ListMessage", defaultlist);
 			config.set("None", "&cNone");
 			save = true;
-		}
+		} 
 		if (save) {
 			try {
 				config.save(configf);
