@@ -27,8 +27,7 @@ import net.milkbowl.vault.chat.Chat;
 
 public class vlist extends JavaPlugin implements Listener{
 
-	ArrayList<String> staff = new ArrayList<String>();
-	ArrayList<String> contributors = new ArrayList<String>();
+	public ArrayList<String> staff = new ArrayList<String>();
 	Chat chat = null;
 	User user = null;
 	IEssentials ess = null;
@@ -62,7 +61,6 @@ public class vlist extends JavaPlugin implements Listener{
 			defaultlist.add(" ");
 			defaultlist.add("&7There is currently {onlineplayers} player(s) online");
 			defaultlist.add("&6Staff Members &8{>>} &e{staff}");
-			defaultlist.add("&6Contributors &8{>>} &e{contributors}");
 			defaultlist.add(" ");
 			defaultlist.add("&8&m--------------------------------------------");
 			config.set("ListMessage", defaultlist);
@@ -92,13 +90,6 @@ public class vlist extends JavaPlugin implements Listener{
         staff.add(this.chat.getPlayerPrefix(p) + p.getName());
             }
             }
-        if ((p.hasPermission("vox.list.contributor")) && (!contributors.contains(p.getName()))) {
-            if (hasNickName(p)) {
-                   contributors.add(this.chat.getPlayerPrefix(p) + "~" + ess.getUser(p).getNickname());
-            } else {
-                contributors.add(this.chat.getPlayerPrefix(p) + p.getName());
-            }
-            }
 	}
 	/*EventHandler for Player's leaving the server*/	
 	@EventHandler
@@ -109,11 +100,6 @@ public class vlist extends JavaPlugin implements Listener{
         } else {
        	 staff.remove(this.chat.getPlayerPrefix(p) + p.getName());
         }
-        if (contributors.contains(hasNickName(p))) {
-       	 contributors.remove(this.chat.getPlayerPrefix(p) + ess.getUser(p).getNickname());
-        } else {
-       	 contributors.remove(this.chat.getPlayerPrefix(p) + p.getName());
-        }
 	}
 	/*/list command*/
 	public boolean onCommand(CommandSender s, Command cmd, String label, String[] args) {
@@ -123,7 +109,6 @@ public class vlist extends JavaPlugin implements Listener{
 				s.sendMessage(ChatColor.translateAlternateColorCodes('&', listMessage
 						.replace("{onlineplayers}", Integer.toString(Bukkit.getOnlinePlayers().size()))
 						.replace("{staff}", getStaffMessage())
-						.replace("{contributors}", getContributorMessage())
 						.replace("{>>}", "»")));
 			}
 			}
@@ -137,55 +122,7 @@ public class vlist extends JavaPlugin implements Listener{
 		}
 		return getConfig().getString("None");
 	}
-	public String getContributorMessage() {
-		if (contributors.size() >= 1) {
-			return Joiner.on(ChatColor.YELLOW + ", ").join(contributors);
-		}
-		return getConfig().getString("None");
-	}
 	
-	public boolean onVanishPreCommand(PlayerCommandPreprocessEvent e) {
-		System.out.println("DB: PlayerCommandPreProcessEvent for onVanishCommand fired");
-		Player p = e.getPlayer();
-		if (e.getMessage().startsWith("/") || e.getMessage().contains("v") || (e.getMessage().contains("vanish"))) {
-		System.out.println("DB: Checked /v command - Success");
-		if (staff.contains(p.getName())) {
-			if (user.isHidden()) {
-		        if (staff.contains(hasNickName(p))) {
-		          	 staff.remove(this.chat.getPlayerPrefix(p) + ess.getUser(p).getNickname());
-		           } else {
-		          	 staff.remove(this.chat.getPlayerPrefix(p) + p.getName());
-		           }				
-			} else {
-			    if ((p.hasPermission("vox.list.staff")) && (!staff.contains(p.getName()))) {
-			     if (hasNickName(p)) {
-			         staff.add(this.chat.getPlayerPrefix(p) + "~" + ess.getUser(p).getNickname());
-			        } else {
-			         staff.add(this.chat.getPlayerPrefix(p) + p.getName());
-			            }
-			            }					
-			}
-		}
-		if (contributors.contains(p.getName())) {
-			if (user.isHidden()) {
-			       if (contributors.contains(hasNickName(p))) {
-			         	 contributors.remove(this.chat.getPlayerPrefix(p) + ess.getUser(p).getNickname());
-			          } else {
-			         	 contributors.remove(this.chat.getPlayerPrefix(p) + p.getName());
-			          }				
-			} else {
-		           if ((p.hasPermission("vox.list.contributor")) && (!contributors.contains(p.getName()))) {
-		            if (hasNickName(p)) {
-		                 contributors.add(this.chat.getPlayerPrefix(p) + "~" + ess.getUser(p).getNickname());
-		            } else {
-		                contributors.add(this.chat.getPlayerPrefix(p) + p.getName());
-		            }
-		            }
-			}
-		}
-		}
-		return true;
-		}	
 	/*Implementation for getting the prefix (I think)*/
 	public boolean setupChat() {
 		RegisteredServiceProvider<Chat> chatProvider = getServer().getServicesManager().getRegistration(Chat.class);
@@ -193,5 +130,45 @@ public class vlist extends JavaPlugin implements Listener{
 		this.chat = ((Chat)chatProvider.getProvider());
 	    }
 		return this.chat != null;
+	}
+	
+	@EventHandler
+	public boolean onPreCommand(PlayerCommandPreprocessEvent e) {
+		Player p = e.getPlayer();
+		if (p instanceof Player) {
+		if (e.getMessage().equals("v")) {
+			if (user.isHidden(p)) {
+				if (staff.contains(hasNickName(p))) {
+					staff.remove(this.chat.getPlayerPrefix(p) + "~" + ess.getUser(p).getNickname());
+				} else {
+					staff.remove(this.chat.getPlayerPrefix(p) + p.getName());
+				}
+				} else {
+					if (hasNickName(p)) {
+						staff.add(this.chat.getPlayerPrefix(p) + "~" + ess.getUser(p).getNickname());
+					} else {
+						staff.add(this.chat.getPlayerPrefix(p) + p.getName());
+					}
+				}
+		}
+		}
+		return true;
+	}
+	
+	public void checkList() {
+		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+	        if (staff.contains(hasNickName(p))) {
+	          	 staff.remove(this.chat.getPlayerPrefix(p) + ess.getUser(p).getNickname());
+	           } else {
+	          	 staff.remove(this.chat.getPlayerPrefix(p) + p.getName());
+	           }
+	        if ((p.hasPermission("vox.list.staff")) && (!staff.contains(p.getName()))) {
+	           if (hasNickName(p)) {
+	              staff.add(this.chat.getPlayerPrefix(p) + "~" + ess.getUser(p).getNickname());
+	           } else {
+	              staff.add(this.chat.getPlayerPrefix(p) + p.getName());
+	           }
+	        }      
+		}
 	}
 }
