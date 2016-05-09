@@ -148,7 +148,7 @@ public class vlist extends JavaPlugin implements Listener{
 	public boolean onVanishPreCommand(PlayerCommandPreprocessEvent e) {
 		System.out.println("DB: PlayerCommandPreProcessEvent for onVanishCommand fired");
 		Player p = e.getPlayer();
-		if (e.equals("v")) {
+		if (e.getMessage().contains("/v") || (e.getMessage().contains("/vanish"))) {
 		System.out.println("DB: Checked /v command - Success");
 			if (user.isHidden()) {
 				System.out.println("DB: Before removal of players in staff arraylist " + staff);
