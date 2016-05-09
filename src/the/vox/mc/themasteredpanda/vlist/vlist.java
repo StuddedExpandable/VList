@@ -34,7 +34,6 @@ public class vlist extends JavaPlugin implements Listener{
 	IEssentials ess = null;
 	public File configf;
 	public YamlConfiguration config;
-//	IEssentials ess = (IEssentials)vlist.this.getServer().getPluginManager().getPlugin("Essentials");	
 
 	
 	public boolean hasNickName(Player p) {
@@ -93,7 +92,7 @@ public class vlist extends JavaPlugin implements Listener{
         staff.add(this.chat.getPlayerPrefix(p) + p.getName());
             }
             }
-        if ((p.hasPermission("vox.list.architect")) && (!contributors.contains(p.getName()))) {
+        if ((p.hasPermission("vox.list.contributor")) && (!contributors.contains(p.getName()))) {
             if (hasNickName(p)) {
                    contributors.add(this.chat.getPlayerPrefix(p) + "~" + ess.getUser(p).getNickname());
             } else {
@@ -148,47 +147,45 @@ public class vlist extends JavaPlugin implements Listener{
 	public boolean onVanishPreCommand(PlayerCommandPreprocessEvent e) {
 		System.out.println("DB: PlayerCommandPreProcessEvent for onVanishCommand fired");
 		Player p = e.getPlayer();
-		if (e.getMessage().contains("/v") || (e.getMessage().contains("/vanish"))) {
+		if (e.getMessage().startsWith("/") || e.getMessage().contains("v") || (e.getMessage().contains("vanish"))) {
 		System.out.println("DB: Checked /v command - Success");
+		if (staff.contains(p.getName())) {
 			if (user.isHidden()) {
-				System.out.println("DB: Before removal of players in staff arraylist " + staff);
-			     if (staff.contains(hasNickName(p))) {
-			       	 staff.remove(this.chat.getPlayerPrefix(p) + ess.getUser(p).getNickname());
-			        } else {
-			       	 staff.remove(this.chat.getPlayerPrefix(p) + p.getName());
-			        }
-			        System.out.println("DB: After removal " + staff);
-					System.out.println("DB: Before removal of players in contrbutor arraylist " + contributors);
-			     if (contributors.contains(hasNickName(p))) {
-			         contributors.remove(this.chat.getPlayerPrefix(p) + ess.getUser(p).getNickname());
-			        } else {
-			         contributors.remove(this.chat.getPlayerPrefix(p) + p.getName());
-			        }   
-			     }
-		     System.out.println("DB: After removal " + contributors);
+		        if (staff.contains(hasNickName(p))) {
+		          	 staff.remove(this.chat.getPlayerPrefix(p) + ess.getUser(p).getNickname());
+		           } else {
+		          	 staff.remove(this.chat.getPlayerPrefix(p) + p.getName());
+		           }				
 			} else {
-				System.out.println("DB: Before adding of players in staff arraylist " + staff);
-		        if ((p.hasPermission("vox.list.staff")) && (!staff.contains(p.getName()))) {
+			    if ((p.hasPermission("vox.list.staff")) && (!staff.contains(p.getName()))) {
+			     if (hasNickName(p)) {
+			         staff.add(this.chat.getPlayerPrefix(p) + "~" + ess.getUser(p).getNickname());
+			        } else {
+			         staff.add(this.chat.getPlayerPrefix(p) + p.getName());
+			            }
+			            }					
+			}
+		}
+		if (contributors.contains(p.getName())) {
+			if (user.isHidden()) {
+			       if (contributors.contains(hasNickName(p))) {
+			         	 contributors.remove(this.chat.getPlayerPrefix(p) + ess.getUser(p).getNickname());
+			          } else {
+			         	 contributors.remove(this.chat.getPlayerPrefix(p) + p.getName());
+			          }				
+			} else {
+		           if ((p.hasPermission("vox.list.contributor")) && (!contributors.contains(p.getName()))) {
 		            if (hasNickName(p)) {
-		                   staff.add(this.chat.getPlayerPrefix(p) + "~" + ess.getUser(p).getNickname());
-		            } else {
-		        staff.add(this.chat.getPlayerPrefix(p) + p.getName());
-		            }
-		            }
-			     System.out.println("DB: After adding " + staff);
-				 System.out.println("DB: Before adding of players in contrbutor arraylist " + contributors);
-		        if ((p.hasPermission("vox.list.contributor")) && (!contributors.contains(p.getName()))) {
-		            if (hasNickName(p)) {
-		                   contributors.add(this.chat.getPlayerPrefix(p) + "~" + ess.getUser(p).getNickname());
+		                 contributors.add(this.chat.getPlayerPrefix(p) + "~" + ess.getUser(p).getNickname());
 		            } else {
 		                contributors.add(this.chat.getPlayerPrefix(p) + p.getName());
 		            }
 		            }
-			     System.out.println("DB: After removal " + contributors);
 			}
-		return true;
 		}
-	
+		}
+		return true;
+		}	
 	/*Implementation for getting the prefix (I think)*/
 	public boolean setupChat() {
 		RegisteredServiceProvider<Chat> chatProvider = getServer().getServicesManager().getRegistration(Chat.class);
