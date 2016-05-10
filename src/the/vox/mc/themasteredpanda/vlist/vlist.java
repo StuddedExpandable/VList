@@ -151,15 +151,6 @@ public class vlist extends JavaPlugin implements Listener {
 			String title = getPrefix(p) + (hasNickName(p) ? "~" + getNickname(p) : p.getName());
 			staff.put(p.getUniqueId(), title);
 		}
-
-
-		//		if ((p.hasPermission("vox.list.staff")) && (!staff.contains(p.getName()))) {
-		//			if (hasNickName(p)) {
-		//				staff.add(this.chat.getPlayerPrefix(p) + "~" + ess.getUser(p).getNickname());
-		//			} else {
-		//				staff.add(this.chat.getPlayerPrefix(p) + p.getName());
-		//			}
-		//		}
 	}
 
 	/*EventHandler for Player's leaving the server*/	
@@ -169,16 +160,9 @@ public class vlist extends JavaPlugin implements Listener {
 		if (staff.containsKey(player.getUniqueId())) {
 			staff.remove(player.getUniqueId());
 		}
-		//NOTE: The if statement above is not really necessary.
-
-		//if (staff.contains(hasNickName(p))) {
-		//	staff.remove(this.chat.getPlayerPrefix(p) + ess.getUser(p).getNickname());
-		//} else {
-		//	staff.remove(this.chat.getPlayerPrefix(p) + p.getName());
-		//}
 	}
 	/*/list command*/
-	@Override //make it clear this method is from another class.
+	@Override
 	public boolean onCommand(CommandSender s, Command cmd, String label, String[] args) {
 		if (cmd.getName().equalsIgnoreCase("list")) {
 			if (s instanceof Player) {
@@ -195,7 +179,6 @@ public class vlist extends JavaPlugin implements Listener {
 	/*Adding in the <name>, <name> feature (i.e. TheMasteredPanda, xExpandable, HoneyHax*/
 	private String getStaffMessage() {
 		if (staff.size() >= 1) {
-			//return Joiner.on(ChatColor.YELLOW + ", ").join(staff);
 			return Joiner.on(ChatColor.YELLOW + ", ").join(staff.values());
 		}
 		return getConfig().getString("None");
@@ -212,35 +195,18 @@ public class vlist extends JavaPlugin implements Listener {
 
 	@EventHandler
 	private boolean onPreCommand(PlayerCommandPreprocessEvent e) {
-		//NOTE: You also need to check for vanish here, and any other aliases
-		//Essentials might have for the command.
-		//Also use equalsIgnoreCase()
 		Player p = e.getPlayer();
 		User user = ess.getUser(p);
-		//		if (p instanceof Player) {
-		//if (e.getMessage().equals("v")) {
-		//NOTICE the addition of the /
 		if (e.getMessage().equalsIgnoreCase("/vanish") || e.getMessage().equalsIgnoreCase("/v")) {
-			if (!user.isHidden(p)) {//NOTICE the addition of ! if they're not hidden we will be hiding them
-				//if (staff.contains(hasNickName(p))) {
+			if (!user.isHidden(p)) {
 				if (staff.containsKey(p.getUniqueId())) {
-					//staff.remove(this.chat.getPlayerPrefix(p) + "~" + ess.getUser(p).getNickname());
 					staff.remove(p.getUniqueId());
-				} //else {
-				//						staff.remove(this.chat.getPlayerPrefix(p) + p.getName());
-				//					}
+				}
 			} else {
-				//Note my use of the ternary operator here, comes in handy :P
 				String title = getPrefix(p) + (hasNickName(p) ? "~" + getNickname(p) : p.getName());
 				staff.put(p.getUniqueId(), title);
-				//					if (hasNickName(p)) {
-				//						staff.add(this.chat.getPlayerPrefix(p) + "~" + ess.getUser(p).getNickname());
-				//					} else {
-				//						staff.add(this.chat.getPlayerPrefix(p) + p.getName());
-				//					}
 			}
 		}
-		//		}
 		return true;
 	}
 
@@ -258,21 +224,5 @@ public class vlist extends JavaPlugin implements Listener {
 				}
 			}
 		}
-
-
-		//		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-		//			if (staff.contains(hasNickName(p))) {
-		//				staff.remove(this.chat.getPlayerPrefix(p) + ess.getUser(p).getNickname());
-		//			} else {
-		//				staff.remove(this.chat.getPlayerPrefix(p) + p.getName());
-		//			}
-		//			if ((p.hasPermission("vox.list.staff")) && (!staff.contains(p.getName()))) {
-		//				if (hasNickName(p)) {
-		//					staff.add(this.chat.getPlayerPrefix(p) + "~" + ess.getUser(p).getNickname());
-		//				} else {
-		//					staff.add(this.chat.getPlayerPrefix(p) + p.getName());
-		//				}
-		//			}      
-		//		}
 	}
 }
